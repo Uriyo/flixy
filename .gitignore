@@ -13,6 +13,7 @@ updateTrailers.ts
 seedtable.js
 seedtable.ts
 .env
+data.ts
 
 # testing
 /coverage
