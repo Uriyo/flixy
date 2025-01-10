@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Movies {
+  movie_id              Int                       @id @default(autoincrement())
+  title                 String                    @db.VarChar(255)
+  description           String?
+  release_year          Int?
+  rating                Decimal                   @db.Decimal(3, 2)
+  youtube_trailer_id    String                    @map("trailerURL")
+  genres                String[]                  @default([])
+  duration              String?
+  cast                  String[]                  @default([])
+  thumbnail_url         String?
+  createdAt             DateTime                  @default(now())
+  updatedAt             DateTime                  @default(now())
+  Recommendations       Recommendation[]
+  Reviews               Reviews[]
+  UserMovieInteractions User_Movie_Interactions[]
+}
+
+model Anime {
+  id                    Int                       @id @default(autoincrement())
+  title                 String
+  thumbnail_url         String?
+  youtube_trailer_id    String?
+  rating                Float
+  duration              String?
+  release_year          Int?
+  genres                String[]                  @default([])
+  createdAt             DateTime                  @default(now())
+  updatedAt             DateTime                  @default(now())
+  description           String?
+  Recommendations       Recommendation[]
+  Reviews               Reviews[]
+  UserMovieInteractions User_Movie_Interactions[]
+}
+
+model TvShow {
+  id                    Int                       @id @default(autoincrement())
+  title                 String
+  thumbnail_url         String?
+  youtube_trailer_id    String?
+  rating                Float
+  duration              String
+  release_year          Int?
+  genres                String[]                  @default([])
+  cast                  String[]                  @default([])
+  createdAt             DateTime                  @default(now())
+  updatedAt             DateTime                  @default(now())
+  description           String?
+  Recommendations       Recommendation[]
+  Reviews               Reviews[]
+  UserMovieInteractions User_Movie_Interactions[]
+}
+
+model Users {
+  user_id               Int                       @id @default(autoincrement())
+  username              String                    @db.VarChar(100)
+  email                 String                    @unique @db.VarChar(255)
+  password              String                    @db.VarChar(255)
+  createdAt             DateTime                  @default(now())
+  Recommendations       Recommendation[]
+  Reviews               Reviews[]
+  UserMovieInteractions User_Movie_Interactions[]
+}
+
+model User_Movie_Interactions {
+  interaction_id   Int      @id @default(autoincrement())
+  user_id          Int
+  movie_id         Int?
+  createdAt        DateTime @default(now())
+  interatcion_type String[]
+  anime_id         Int?
+  tv_show_id       Int?
+  Anime            Anime?   @relation(fields: [anime_id], references: [id])
+  Movie            Movies?  @relation(fields: [movie_id], references: [movie_id])
+  TvShow           TvShow?  @relation(fields: [tv_show_id], references: [id])
+  User             Users    @relation(fields: [user_id], references: [user_id])
+}
+
+model Reviews {
+  review_id   Int      @id @default(autoincrement())
+  user_id     Int
+  movie_id    Int?
+  review_text String
+  rating      Decimal  @db.Decimal(3, 2)
+  created_at  DateTime @default(now())
+  anime_id    Int?
+  tv_show_id  Int?
+  Anime       Anime?   @relation(fields: [anime_id], references: [id])
+  Movie       Movies?  @relation(fields: [movie_id], references: [movie_id])
+  TvShow      TvShow?  @relation(fields: [tv_show_id], references: [id])
+  User        Users    @relation(fields: [user_id], references: [user_id])
+}
+
+model Recommendation {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  movie_id   Int?
+  anime_id   Int?
+  tv_show_id Int?
+  message    String
+  createdAt  DateTime @default(now())
+  Anime      Anime?   @relation(fields: [anime_id], references: [id])
+  Movie      Movies?  @relation(fields: [movie_id], references: [movie_id])
+  TvShow     TvShow?  @relation(fields: [tv_show_id], references: [id])
+  User       Users    @relation(fields: [user_id], references: [user_id])
+}

@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Movies" ALTER COLUMN "release_year" DROP NOT NULL,
+ALTER COLUMN "genres" SET DEFAULT ARRAY[]::VARCHAR(255)[];
